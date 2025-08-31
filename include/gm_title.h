@@ -2,6 +2,7 @@
 #define GM_TITLE_H
 
 #include "gm_scene.h"
+
 #include "bn_vector.h"
 #include "bn_blending_actions.h"
 #include "bn_sprite_position_hbe_ptr.h"
