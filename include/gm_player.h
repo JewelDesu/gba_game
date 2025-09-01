@@ -10,8 +10,9 @@
 #include "bn_span.h"
 
 #include "gm_level.h"
+#include "gm_hitbox.h"
 
-#include "bn_sprite_items_cat_sprite.h"
+#include "bn_sprite_items_banana.h"
 namespace gm
 {
     class Player
@@ -23,6 +24,8 @@ namespace gm
 
             void move_left();
             void move_right();
+            void apply_animation_state();
+            void collide_with_objects(bn::affine_bg_ptr map, gm::Level level);
             void update_pos(bn::affine_bg_ptr map, gm::Level level);
             void spawn(bn::fixed_point pos, bn::camera_ptr camera, bn::affine_bg_ptr map);
             void reset();
@@ -37,9 +40,16 @@ namespace gm
 
             bn::optional<bn::span<const bn::affine_bg_map_cell>> _map_cells;
             
+            gm::Hitbox _hitbox_left = Hitbox(-4,0,4,16);
+            gm::Hitbox _hitbox_right = Hitbox(4,0,6,16);
+            gm::Hitbox _hitbox_fall = Hitbox(0,16,16,0);
+
+            bool _running = false;
+            bool _grounded = false;
+            bool _falling = false;
 
             bn::sprite_animate_action<10> _action = bn::create_sprite_animate_action_forever(
-                        _sprite, 30, bn::sprite_items::cat_sprite.tiles_item(), 0,1,0,1,0,1,0,1,0,1);
+                        _sprite, 30, bn::sprite_items::banana.tiles_item(), 0,1,2,3,0,1,2,3);
             bn::optional<bn::sprite_animate_action<4>> _spin_action;
 
             void _update_camera(int lerp);

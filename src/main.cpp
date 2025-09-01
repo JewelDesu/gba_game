@@ -24,7 +24,7 @@
 #include "gm_level.h"
 
 #include "gm_small_sprite_font.h"
-#include "bn_sprite_items_cat_sprite.h"
+#include "bn_sprite_items_banana.h"
 
 
 int main()
@@ -35,7 +35,7 @@ int main()
     bn::sprite_text_generator small_text_generator(gm::small_sprite_font);
     small_text_generator.set_bg_priority(1);
 
-    bn::sprite_ptr cat_sprite = bn::sprite_items::cat_sprite.create_sprite(0,0);
+    bn::sprite_ptr cat_sprite = bn::sprite_items::banana.create_sprite(0,0);
     cat_sprite.set_visible(false);
     gm::Player player = gm::Player(cat_sprite);
    

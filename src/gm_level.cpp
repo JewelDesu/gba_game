@@ -48,15 +48,15 @@ namespace gm
         }
     }
 
-    bn::vector<int,32> Level::floor_tiles()
+    bn::vector<int,64> Level::floor_tiles()
     {
         return _floor_tiles;
     }
-    bn::vector<int,32> Level::wall_tiles()
+    bn::vector<int,64> Level::wall_tiles()
     {
         return _wall_tiles;
     }
-    bn::vector<int,32> Level::ceiling_tiles()
+    bn::vector<int,64> Level::ceiling_tiles()
     {
         return _ceiling_tiles;
     }

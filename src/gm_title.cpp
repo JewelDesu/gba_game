@@ -28,6 +28,8 @@
 #include "bn_sprite_items_title_1.h"
 #include "bn_sprite_items_title_2.h"
 
+#include "bn_regular_bg_items_house_bg.h"
+
 namespace gm
 {
 
@@ -63,7 +65,8 @@ void Title::fade_out()
 
     Scene Title::execute()
     {
-        //bn::regular_bg_ptr regular_bg = bn::regular_bg_items::bg.create_bg(0, 0);
+        bn::regular_bg_ptr regular_bg = bn::regular_bg_items::bg.create_bg(0, 0);
+        //bn::regular_bg_ptr regular_bg = bn::regular_bg_items::house_bg.create_bg(0, 0);
 
         bn::fixed_point init_pos1 = bn::fixed_point(-70, 44);
         bn::fixed_point init_pos2 = bn::fixed_point(70, 44);
@@ -85,12 +88,12 @@ void Title::fade_out()
         bn::camera_ptr camera = bn::camera_ptr::create(0,0);
 
         bn::array<bn::fixed, bn::display::height()> horizontal_deltas;
-//        bn::regular_bg_position_hbe_ptr horizontal_hbe =
-//                bn::regular_bg_position_hbe_ptr::create_horizontal(regular_bg, horizontal_deltas);
+        bn::regular_bg_position_hbe_ptr horizontal_hbe =
+                bn::regular_bg_position_hbe_ptr::create_horizontal(regular_bg, horizontal_deltas);
 
         apple_cat.set_camera(camera);
         banana_cat.set_camera(camera);
-//        regular_bg.set_camera(camera);
+        regular_bg.set_camera(camera);
 
         bn::fixed layer_1 = 0;
         bn::fixed start_y = -30;
@@ -123,7 +126,7 @@ void Title::fade_out()
                 horizontal_deltas[index] = layer_1;
             }
 
-            //horizontal_hbe.reload_deltas_ref();
+            horizontal_hbe.reload_deltas_ref();
 
             //_action.update();
             

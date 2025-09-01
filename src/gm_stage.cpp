@@ -11,8 +11,7 @@
 
 #include "gm_level.h"
 
-#include "bn_affine_bg_items_house_2x.h"
-#include "bn_regular_bg_items_house_bg.h"
+#include "bn_affine_bg_items_stage.h"
 
 
 namespace gm
@@ -28,15 +27,12 @@ namespace gm
         bn::camera_ptr camera = bn::camera_ptr::create(spawn_location.x(), spawn_location.y());
 
 
-        bn::regular_bg_ptr map_bg = bn::regular_bg_items::house_bg.create_bg(512, 512);
-        bn::affine_bg_ptr map = bn::affine_bg_items::house_2x.create_bg(512, 512);
-        map_bg.set_priority(2);
+        bn::affine_bg_ptr map = bn::affine_bg_items::stage.create_bg(512, 512);
         map.set_priority(1);
 
         gm::Level level = gm::Level(map);
 
         map.set_camera(camera);
-        map_bg.set_camera(camera);
 
 
         _player->spawn(spawn_location, camera, map);
@@ -44,7 +40,7 @@ namespace gm
         while(true)
         {
             _player->update_pos(map,level);
-
+            _player->apply_animation_state();
             bn::core::update();
         }
     }
