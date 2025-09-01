@@ -24,6 +24,7 @@ namespace gm
 
             void move_left();
             void move_right();
+            void jump(bn::affine_bg_ptr map, gm::Level level);
             void apply_animation_state();
             void collide_with_objects(bn::affine_bg_ptr map, gm::Level level);
             void update_pos(bn::affine_bg_ptr map, gm::Level level);
@@ -43,10 +44,12 @@ namespace gm
             gm::Hitbox _hitbox_left = Hitbox(-4,0,4,16);
             gm::Hitbox _hitbox_right = Hitbox(4,0,6,16);
             gm::Hitbox _hitbox_fall = Hitbox(0,16,16,0);
+            gm::Hitbox _hitbox_jump = Hitbox(0,4,6,4);
 
             bool _running = false;
             bool _grounded = false;
             bool _falling = false;
+            bool _jumping = false;
 
             bn::sprite_animate_action<10> _action = bn::create_sprite_animate_action_forever(
                         _sprite, 30, bn::sprite_items::banana.tiles_item(), 0,1,2,3,0,1,2,3);

@@ -33,7 +33,8 @@
 namespace gm
 {
 
-    bn::fixed loop(bn::fixed number, bn::fixed increment){
+    bn::fixed loop(bn::fixed number, bn::fixed increment)
+    {
         number += increment;
         if(number > 256)
         {
@@ -49,18 +50,6 @@ namespace gm
         : _text_generator(&text_generator)
     {
 
-    }
-
-void Title::fade_out()
-    {
-        bn::blending::set_fade_alpha(0);
-        bn::blending::set_fade_color(bn::blending::fade_color_type::WHITE);
-        _fade_action = bn::blending_fade_alpha_to_action(15, 1);
-        while(!_fade_action.value().done()){
-            _fade_action.value().update();
-            bn::core::update();
-        }
-        bn::blending::set_fade_alpha(1);
     }
 
     Scene Title::execute()
@@ -131,8 +120,7 @@ void Title::fade_out()
             //_action.update();
             
             bn::core::update();
-        }
-        fade_out();    
+        }  
         return Scene::STAGE;
         
         //bg.set_blending_enabled(true);

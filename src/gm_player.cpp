@@ -72,7 +72,7 @@ namespace gm
 
 
     constexpr const bn::fixed gravity = 0.2;
-    constexpr const bn::fixed jump = 4;
+    constexpr const bn::fixed jumpy = 4;
     constexpr const bn::fixed acc = 0.4;
     constexpr const bn::fixed max_dy = 6;
     constexpr const bn::fixed friction = 0.85;
@@ -109,19 +109,20 @@ namespace gm
         _falling = false;
         _running = false;
         _grounded = false;
+        _jumping = false;
     }
     bn::fixed_point Player::pos()
     {
         return _pos;
     }
 
-
     void Player::collide_with_objects(bn::affine_bg_ptr map, gm::Level level){
         // if falling
         if(_dy > 0){
             _falling = true;
             _grounded = false;
-            
+            _jumping = false;
+
             // clamp max fall speed
             if(_dy > max_dy){
                 _dy = max_dy;
@@ -135,7 +136,16 @@ namespace gm
                 _pos.set_y(_pos.y() - modulo(_pos.y(),8));
                 //todo if they pressed jump a few milliseconds before hitting the ground then jump now
             }
-        } 
+        }
+        else if(_dy < 0) // jumping
+        {
+            _jumping = true;
+            _falling = false;
+            if(check_collisions_map(_pos, up, _hitbox_jump, map, level, _map_cells.value()))
+            {
+                _dy = 0;
+            }
+        }
         if(_dx > 0) // moving right
         {
             if(check_collisions_map(_pos, right,_hitbox_right, map, level, _map_cells.value())){
@@ -164,19 +174,37 @@ namespace gm
         _dx += acc;
     }
 
+    void Player::jump(bn::affine_bg_ptr map, gm::Level level)
+    {
+        if(_grounded)
+        {
+            _dy -= jumpy;
+            _grounded = false;
+        }
+    }
+
     void Player::apply_animation_state()
     {
         _sprite.set_vertical_scale(1);
-        if(_running){
+        if(_jumping)
+        {
+            if(_action.graphics_indexes().front() != 10){
+            _action = bn::create_sprite_animate_action_forever(
+                _sprite, 6, bn::sprite_items::banana.tiles_item(), 10,11,12);
+            }
+        }
+        else if(_running)
+        {
             if(_action.graphics_indexes().front() != 8){
                 _action = bn::create_sprite_animate_action_forever(
-                        _sprite, 2.5, bn::sprite_items::banana.tiles_item(), 8,9,4,5,6,7);
+                    _sprite, 2.5, bn::sprite_items::banana.tiles_item(), 8,9,4,5,6,7);
             }
-        } else {
-            //idle
+        }
+        else 
+        {
             if(_action.graphics_indexes().front() != 3){
                 _action = bn::create_sprite_animate_action_forever(
-                        _sprite, 30, bn::sprite_items::banana.tiles_item(), 3,0,1,2,3,0,1,2);
+                    _sprite, 15, bn::sprite_items::banana.tiles_item(), 3,0,1,2,3,0,1,2);
             }
         }
 
@@ -225,10 +253,15 @@ namespace gm
         {
             move_right();
         }
-        else if(_running) 
+        else if(_running & ! _jumping) 
         {
             _running = false;
         } 
+
+        if(bn::keypad::a_pressed())
+        {
+            jump(map, level);
+        }
 
         collide_with_objects(map, level);
 
