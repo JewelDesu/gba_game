@@ -32,7 +32,7 @@ namespace gm
         return cells.at(cell);
     }
 
-    [[nodiscard]] bool contains_cell(int tile, bn::vector<int, 64> tiles)
+    [[nodiscard]] bool contains_cell(int tile, bn::vector<int, 32> tiles)
     {
         for(int index = 0; index < tiles.size(); ++index)
         {
@@ -51,7 +51,7 @@ namespace gm
         bn::fixed u = pos.y() - hitbox.height() / 2 + hitbox.y();
         bn::fixed d = pos.y() + hitbox.height() / 2 + hitbox.y();
         
-        bn::vector<int, 64> tiles;
+        bn::vector<int, 32> tiles;
         if(direction == down){
             tiles = level.floor_tiles();
         } else if(direction == left || direction == right){
@@ -118,6 +118,7 @@ namespace gm
     {
         return _pos;
     }
+
 
     void Player::collide_with_objects(bn::affine_bg_ptr map, gm::Level level){
         bool touching_left = false;

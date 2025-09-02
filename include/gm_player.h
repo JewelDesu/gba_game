@@ -39,7 +39,6 @@ namespace gm
             bn::fixed_point _pos;
             bn::optional<bn::camera_ptr> _camera;
             bn::optional<bn::affine_bg_ptr> _map;
-
             bn::optional<bn::span<const bn::affine_bg_map_cell>> _map_cells;
             
             gm::Hitbox _hitbox_left = Hitbox(-4,0,4,16);
@@ -56,7 +55,7 @@ namespace gm
 
             bn::sprite_animate_action<10> _action = bn::create_sprite_animate_action_forever(
                         _sprite, 30, bn::sprite_items::banana.tiles_item(), 0,1,2,3,0,1,2,3);
-            bn::optional<bn::sprite_animate_action<4>> _spin_action;
+            bn::optional<bn::sprite_animate_action<4>> _attack_action;
 
             void _update_camera(int lerp);
     };
