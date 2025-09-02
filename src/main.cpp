@@ -35,9 +35,12 @@ int main()
     bn::sprite_text_generator small_text_generator(gm::small_sprite_font);
     small_text_generator.set_bg_priority(1);
 
-    bn::sprite_ptr cat_sprite = bn::sprite_items::banana.create_sprite(0,0);
-    cat_sprite.set_visible(false);
-    gm::Player player = gm::Player(cat_sprite);
+    bn::sprite_ptr banana = bn::sprite_items::banana.create_sprite(0,0);
+    //banana.set_horizontal_scale(2);
+
+    banana.set_visible(false);
+
+    gm::Player player = gm::Player(banana);
    
     while(true)
     {

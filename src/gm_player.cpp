@@ -76,6 +76,7 @@ namespace gm
     constexpr const bn::fixed acc = 0.4;
     constexpr const bn::fixed max_dy = 6;
     constexpr const bn::fixed friction = 0.85;
+    constexpr const bn::fixed wall_slide_speed = 0.35;
 
     Player::Player(bn::sprite_ptr sprite) :
     _sprite(sprite),
@@ -110,6 +111,8 @@ namespace gm
         _running = false;
         _grounded = false;
         _jumping = false;
+        _wallslide = false;
+        _jumps = true;
     }
     bn::fixed_point Player::pos()
     {
@@ -117,12 +120,14 @@ namespace gm
     }
 
     void Player::collide_with_objects(bn::affine_bg_ptr map, gm::Level level){
+        bool touching_left = false;
+        bool touching_right = false;
         // if falling
         if(_dy > 0){
             _falling = true;
             _grounded = false;
             _jumping = false;
-
+            
             // clamp max fall speed
             if(_dy > max_dy){
                 _dy = max_dy;
@@ -132,6 +137,7 @@ namespace gm
             {
                 _grounded = true;
                 _falling = false;
+                _jumps = true;
                 _dy = 0;
                 _pos.set_y(_pos.y() - modulo(_pos.y(),8));
                 //todo if they pressed jump a few milliseconds before hitting the ground then jump now
@@ -150,12 +156,38 @@ namespace gm
         {
             if(check_collisions_map(_pos, right,_hitbox_right, map, level, _map_cells.value())){
                 _dx = 0;
+                touching_right = true;
             }
         } 
         else if (_dx < 0) // moving left
         {
             if(check_collisions_map(_pos, left, _hitbox_left, map, level, _map_cells.value())){
                 _dx = 0;
+                touching_left = true;
+            }
+        }
+
+        //wall sliding
+        _wallslide = false;
+        if(!_grounded && _falling)
+        {
+            if(bn::keypad::left_held() && touching_left)
+            {
+                _falling = false;
+                _wallslide = true;
+            }
+            else if(bn::keypad::right_held() && touching_right)
+            {
+                _falling = false;
+                _wallslide = true;
+            }
+
+            if(_wallslide)
+            {
+
+                if(_dy > wall_slide_speed){
+                    _dy = wall_slide_speed;
+                }
             }
         }
     }
@@ -182,6 +214,15 @@ namespace gm
             _grounded = false;
         }
     }
+    void Player::wall_jump(bn::affine_bg_ptr map, gm::Level level)
+    {
+        if(_wallslide)
+        {
+            _dy -= jumpy;
+            _grounded = false;
+            _jumps = false;
+        }
+    }
 
     void Player::apply_animation_state()
     {
@@ -190,8 +231,18 @@ namespace gm
         {
             if(_action.graphics_indexes().front() != 10){
             _action = bn::create_sprite_animate_action_forever(
-                _sprite, 6, bn::sprite_items::banana.tiles_item(), 10,11,12);
+                _sprite, 6, bn::sprite_items::banana.tiles_item(), 10,11,12,10,11,12);
             }
+        }
+        else if(_falling)
+        {
+            _action = bn::create_sprite_animate_action_forever(
+                _sprite, 6, bn::sprite_items::banana.tiles_item(), 12,12,12,12,12,12);
+        }
+        else if(_wallslide)
+        {
+            _action = bn::create_sprite_animate_action_forever(
+                _sprite, 6, bn::sprite_items::banana.tiles_item(), 2,2,2,2,2,2);
         }
         else if(_running)
         {
@@ -260,7 +311,12 @@ namespace gm
 
         if(bn::keypad::a_pressed())
         {
-            jump(map, level);
+            if(_wallslide && _jumps)
+            {
+                wall_jump(map, level);
+            }
+            else
+                jump(map, level);
         }
 
         collide_with_objects(map, level);

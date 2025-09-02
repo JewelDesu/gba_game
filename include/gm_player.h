@@ -25,6 +25,7 @@ namespace gm
             void move_left();
             void move_right();
             void jump(bn::affine_bg_ptr map, gm::Level level);
+            void wall_jump(bn::affine_bg_ptr map, gm::Level level);
             void apply_animation_state();
             void collide_with_objects(bn::affine_bg_ptr map, gm::Level level);
             void update_pos(bn::affine_bg_ptr map, gm::Level level);
@@ -50,6 +51,8 @@ namespace gm
             bool _grounded = false;
             bool _falling = false;
             bool _jumping = false;
+            bool _wallslide = false;
+            bool _jumps = true;
 
             bn::sprite_animate_action<10> _action = bn::create_sprite_animate_action_forever(
                         _sprite, 30, bn::sprite_items::banana.tiles_item(), 0,1,2,3,0,1,2,3);
