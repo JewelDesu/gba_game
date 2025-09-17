@@ -5,8 +5,10 @@ namespace gm
 {
     enum class ENEMY_TYPE
     {
-        GOOMBA
-    }
+        GOOMBA,
+        SLIME,
+        GOOMBA_BOSS
+    };
 }
 
 #endif

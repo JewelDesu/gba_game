@@ -57,7 +57,8 @@ int main()
         else if(scene == gm::Scene::STAGE)
         {
             gm::Stage stage = gm::Stage(player);
-            scene = stage.execute(bn::fixed_point(293, 368));
+            //scene = stage.execute(bn::fixed_point(293, 383));
+            scene = stage.execute(bn::fixed_point(175, 391));
         }
         bn::core::update();
     }

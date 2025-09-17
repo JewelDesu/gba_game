@@ -22,13 +22,10 @@
 #include "bn_regular_bg_items_bg.h"
 #include "bn_sprite_items_apple_cat.h"
 #include "bn_sprite_items_banana_cat.h"
-#include "bn_sprite_items_title_start_1.h"
-#include "bn_sprite_items_title_start_2.h"
-#include "bn_sprite_items_title_start_3.h"
 #include "bn_sprite_items_title_1.h"
 #include "bn_sprite_items_title_2.h"
 
-#include "bn_regular_bg_items_house_bg.h"
+
 
 namespace gm
 {

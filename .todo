@@ -1,9 +1,9 @@
 player death
-player damage
+player damage 90% / hit indicators for enemies
 
-npc/enemy engine
+npc/enemy engine 50% / enemies almost done
 
-health implementation
+health implementation / kinda
 
 game ui/menu etc....
 game saving

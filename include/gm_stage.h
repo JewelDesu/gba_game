@@ -5,6 +5,7 @@
 #include "gm_scene.h"
 #include "bn_fixed_point.h"
 
+#include "gm_enemy_gun.h"
 
 
 namespace gm
@@ -17,6 +18,7 @@ namespace gm
 
         private:
         Player* _player;
+        Enemy_Gun enemy_bullets;
     };
 }
 
