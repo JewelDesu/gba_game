@@ -7,7 +7,12 @@ namespace gm
     {
         TITLE,
         MENU,
-        STAGE
+        STAGE,
+        DEATH,
+        MINNIE,
+        LOADING,
+        THIRD,
+        SELECT
     };
 }
 

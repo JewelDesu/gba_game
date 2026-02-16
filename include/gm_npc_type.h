@@ -4,6 +4,10 @@
 namespace gm
 {
     enum class NPC_TYPE
+    {
+        APPLECAT,
+        BANANACAT
+    };
 }
 
 #endif

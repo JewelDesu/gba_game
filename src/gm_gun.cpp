@@ -10,6 +10,7 @@
 #include "bn_sprite_items_bullet_blow.h"
 
 #include "gm_player_gun_data.h"
+#include "bn_sound_items.h"
 
 namespace gm 
     {
@@ -39,6 +40,7 @@ namespace gm
         {
             BN_LOG("Gun::shoot called");
             spawn_projectile(camera, player);
+            bn::sound_items::gunloop_explosion.play(0.6);
         }
 
         void Gun::update_projectiles(const bn::camera_ptr& camera, Player& player, bn::affine_bg_ptr map, Level level)

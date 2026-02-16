@@ -22,25 +22,38 @@
 #include "gm_player.h"
 #include "gm_stage.h"
 #include "gm_level.h"
+#include "gm_death.h"
+#include "gm_globals.h"
+#include "gm_minnie.h"
+#include "gm_third.h"
+#include "gm_player_select.h"
+#include "gm_loading.h"
+#include "gm_player_type.h"
 
 #include "gm_small_sprite_font.h"
 #include "bn_sprite_items_banana.h"
+#include "bn_sprite_items_apple.h"
 
 
 int main()
 {
     bn::core::init();
-    gm::Scene scene = gm::Scene::TITLE;
+    gm::Scene scene = gm::Scene::TITLE; 
+    gm::PLAYER_TYPE player_type = gm::PLAYER_TYPE::BANANA_CAT;  
 
     bn::sprite_text_generator small_text_generator(gm::small_sprite_font);
     small_text_generator.set_bg_priority(1);
 
-    bn::sprite_ptr banana = bn::sprite_items::banana.create_sprite(0,0);
+    bn::sprite_ptr _cat = (player_type == gm::PLAYER_TYPE::BANANA_CAT)
+        ? bn::sprite_items::banana.create_sprite(0,0)
+        : bn::sprite_items::apple.create_sprite(0,0);
+
+    //bn::sprite_ptr _cat = bn::sprite_items::banana.create_sprite(0,0);
     //banana.set_horizontal_scale(2);
 
-    banana.set_visible(false);
+    _cat.set_visible(false);
 
-    gm::Player player = gm::Player(banana);
+    gm::Player player = gm::Player(_cat, player_type);
    
     while(true)
     {
@@ -54,11 +67,40 @@ int main()
             gm::Menu menu = gm::Menu();
             scene = menu.execute();
         }
+        else if(scene == gm::Scene::SELECT)
+        {
+            gm::Player_select select = gm::Player_select(player, small_text_generator);
+            scene = select.execute();
+        }
         else if(scene == gm::Scene::STAGE)
         {
             gm::Stage stage = gm::Stage(player);
             //scene = stage.execute(bn::fixed_point(293, 383));
-            scene = stage.execute(bn::fixed_point(175, 391));
+            scene = stage.execute(gm::globals::savegame._pos);
+        }
+        else if(scene == gm::Scene::DEATH)
+        {
+            gm::Death death = gm::Death(player, small_text_generator);
+            scene = death.execute();
+        }
+        else if(scene == gm::Scene::MINNIE)
+        {
+            gm::Minnie minnie = gm::Minnie(player);
+            scene = minnie.execute(gm::globals::savegame._pos);
+            //scene = minnie.execute(bn::fixed_point(50, 943));
+        }
+        else if(scene == gm::Scene::THIRD)
+        {
+            gm::Third third = gm::Third(player);
+            scene = third.execute(gm::globals::savegame._pos);
+            //scene = minnie.execute(bn::fixed_point(50, 943));
+        }
+        player.delete_data();
+        player.hide();
+        if(scene != gm::Scene::DEATH && scene != gm::Scene::TITLE)
+        {
+            gm::Loading loading = gm::Loading();
+            loading.execute(scene);
         }
         bn::core::update();
     }

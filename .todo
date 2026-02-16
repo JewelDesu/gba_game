@@ -1,12 +1,14 @@
-player death
-player damage 90% / hit indicators for enemies
+//player death DONE
+//player damage / hit indicators for enemies DONE
 
-npc/enemy engine 50% / enemies almost done
+npc/enemy engine 50% / enemies almost done / more enemies
 
-health implementation / kinda
+//health implementation / DONE
 
-game ui/menu etc....
-game saving
-game loading
+//game ui/menu etc.... DONE
+//game saving DONE
+//game loading DONE
 
 MAYBE INVENTORY, ITEMS IDK
+
+Third last stage
