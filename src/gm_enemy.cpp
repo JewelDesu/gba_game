@@ -18,9 +18,13 @@
 #include "gm_enemy_type.h"
 #include "gm_hitbox.h"
 #include "gm_collision.h"
+#include "gm_bullet_extra.h"
+#include "gm_enemy_gun.h"
 
 #include "bn_sprite_items_goomba.h"
 #include "bn_sprite_items_slime.h"
+#include "bn_sprite_items_glorp_craft.h"
+#include "bn_sound_items.h"
 
 namespace gm
 {
@@ -89,7 +93,7 @@ namespace gm
         _map_cells = map.map().cells_ref().value();
         _dir = 1;
         map_cells = map.map().cells_ref().value();
-        if(_type == ENEMY_TYPE::GOOMBA)
+        if(_type == ENEMY_TYPE::GOOMBA || _type == ENEMY_TYPE::GOOMBA_BOSS)
         {
             _sprite = bn::sprite_items::goomba.create_sprite(_pos.x(), _pos.y());
             _sprite.value().set_camera(_camera);
@@ -105,6 +109,14 @@ namespace gm
             _action = bn::create_sprite_animate_action_forever(
                              _sprite.value(), 20, bn::sprite_items::slime.tiles_item(), 0,1,0,1);
         } 
+        else if (_type == ENEMY_TYPE::GLORP_CRAFT)
+        {
+            _sprite = bn::sprite_items::glorp_craft.create_sprite(_pos.x(), _pos.y());
+            _sprite.value().set_camera(_camera);
+            _sprite.value().set_bg_priority(1);
+            _action = bn::create_sprite_animate_action_forever(
+                             _sprite.value(), 20, bn::sprite_items::glorp_craft.tiles_item(), 0,0);
+        } 
         _sprite.value().set_visible(true);
     }
 
@@ -119,31 +131,37 @@ namespace gm
         return !_invulnerable; 
     }
 
-    bool Enemy::damage_from_left(int damage)
+    int Enemy::damage_from_left(int damage)
     {
-        _dy -= 0.4;
-        _dx -= 1;
-        _dir = 1;
-        _direction_timer = 0;
-        _grounded = false;
-        _sprite.value().set_horizontal_flip(true);
-
+        if(_type != ENEMY_TYPE::GLORP_CRAFT)
+        {
+            _dy -= 0.4;
+            _dx -= 1;
+            _dir = 1;
+            _direction_timer = 0;
+            _grounded = false;
+            _sprite.value().set_horizontal_flip(true);
+        }
+        
         return damage_taken(damage);
     }
 
-    bool Enemy::damage_from_right(int damage)
+    int Enemy::damage_from_right(int damage)
     {
-        _dy -= 0.4;
-        _dx += 1;
-        _dir = -1;
-        _direction_timer = 0;
-        _grounded = false;
-        _sprite.value().set_horizontal_flip(false);
-
+        if(_type != ENEMY_TYPE::GLORP_CRAFT)
+        {
+            _dy -= 0.4;
+            _dx += 1;
+            _dir = -1;
+            _direction_timer = 0;
+            _grounded = false;
+            _sprite.value().set_horizontal_flip(false);
+        }
+        
         return damage_taken(damage);
     }
 
-    bool Enemy::damage_taken(int damage)
+    int Enemy::damage_taken(int damage)
     {
         if(!_invulnerable)
         {
@@ -152,22 +170,37 @@ namespace gm
 
             if(_hp <= 0)
             {
+                int points = 0;
+                bn::sound_items::pop1.play();
                 if(_type == ENEMY_TYPE::GOOMBA)
                 {
+                    //_points.set_points(_points.point() + 1);
+                    points = 1;
                     _action = bn::create_sprite_animate_action_once(
-                        _sprite.value(),5, bn::sprite_items::goomba.tiles_item(), 2,2,2,2);
+                        _sprite.value(),5, bn::sprite_items::goomba.tiles_item(), 2,2,2,2);         
                 }
                 else if(_type == ENEMY_TYPE::SLIME)
                 {
+                    //_points.set_points(_points.point() + 1);
+                    points = 1;
                     _action = bn::create_sprite_animate_action_once(
                         _sprite.value(),5, bn::sprite_items::slime.tiles_item(), 2,3,2,3);
                 }
                 else if(_type == ENEMY_TYPE::GOOMBA_BOSS)
                 {
+                    //_points.set_points(_points.point() + 10);
+                    points = 10;
                     _action = bn::create_sprite_animate_action_once(
                         _sprite.value(),5, bn::sprite_items::goomba.tiles_item(), 2,2,2,2);
                 }
-                return true;
+                else if(_type == ENEMY_TYPE::GLORP_CRAFT)
+                {
+                    //_points.set_points(_points.point() + 10);
+                    points = 100000;
+                    _action = bn::create_sprite_animate_action_once(
+                        _sprite.value(),1, bn::sprite_items::goomba.tiles_item(), 0,0);
+                }
+                return points;
             }
         }
 
@@ -181,10 +214,14 @@ namespace gm
         //BN_LOG("Enemy pos:", _pos.x().integer(), ",", _pos.y().integer());
         if(!_dead)
         {
-            if(_type == ENEMY_TYPE::GOOMBA || ENEMY_TYPE::GOOMBA_BOSS)
+            if(_type == ENEMY_TYPE::GOOMBA || _type == ENEMY_TYPE::GOOMBA_BOSS)
             {
                 return check_collisions_bb(attack, _pos.x(), _pos.y(), 8, 16);
             } 
+            else if(_type == ENEMY_TYPE::GLORP_CRAFT)
+            {
+                return check_collisions_bb(attack, _pos.x(), _pos.y(),32 ,64);
+            }
             else 
             {
                 return check_collisions_bb(attack, _pos.x(), _pos.y(), 8, 8);
@@ -210,7 +247,7 @@ namespace gm
 
     bool Enemy::_will_fall()
     {
-        if(_type == ENEMY_TYPE::GOOMBA || ENEMY_TYPE::GOOMBA_BOSS)
+        if(_type == ENEMY_TYPE::GOOMBA || _type == ENEMY_TYPE::GOOMBA_BOSS)
         {
             if(_dx < 0){ // left
                 if(!_check_collisions_map(_pos, directions::down, Hitbox(-4,16,4,8), _map, _level, _map_cells))
@@ -247,9 +284,21 @@ namespace gm
         return false;
     }
 
+    bool Enemy::_fall_check(bn::fixed x, bn::fixed y)
+    {  
+        if(_check_collisions_map(bn::fixed_point(x, y), directions::down, Hitbox(0,16,4,9), _map, _level, _map_cells))
+        {
+            return true;
+        } 
+        else 
+        {
+            return false;
+        }
+    }
+
     bool Enemy::check_wall_bullet(bn::fixed_point pos, bn::fixed_point velocity, bn::affine_bg_ptr map, Level level)
     {
-        BN_LOG("Gun::update_projectiles wall check");
+        //BN_LOG("Gun::update_projectiles wall check");
         directions dir;
         if(bn::abs(velocity.x()) > bn::abs(velocity.y())) {
             dir = (velocity.x() < 0) ? directions::left : directions::right;
@@ -257,18 +306,18 @@ namespace gm
         else {
         dir = (velocity.y() < 0) ? directions::up : directions::down;
         }
-        BN_LOG("Gun::update_projectiles direction", dir);
+        //BN_LOG("Gun::update_projectiles direction", dir);
 
         if(dir == up)
         {        
             bool result = _check_collisions_map(pos, up, _bullet_hitbox_left, map, level, map_cells.value());
-            BN_LOG("check_collisions_map result: ", result);
+            //BN_LOG("check_collisions_map result: ", result);
             return result;
         }
         else
         {
             bool result = _check_collisions_map(pos, down, _bullet_hitbox_right, map, level, map_cells.value());        
-            BN_LOG("check_collisions_map result: ", result);
+            //BN_LOG("check_collisions_map result: ", result);
             return result;
         }
     }
@@ -292,23 +341,24 @@ namespace gm
         return _type;
     }
 
-    void Enemy::_shoot_bullet(enemy_bullet_type bullet_type, const bn::fixed_point& delta_position,
-                                const bn::fixed_point& hero_position, const bn::camera_ptr& camera,
-                                enemy_bullets& enemy_bullets) const
-{
-    gun.enemy_shoot(camera, hero_position, _wizard_position, enemy_bullet_event(bullet_type, delta_position, 1),);
-}
+    void Enemy::update_cooldowns()
+    {
+        if(_shoot_cooldown > 0)
+        {
+            --_shoot_cooldown;
+        }
+    }
 
+    bool Enemy::side()
+    {
+        return _sprite.value().horizontal_flip();
+    }
 
 
     void Enemy::update_pos_enemy(bn::fixed_point player_pos, Enemy_Gun& gun)
     {
         if(!_dead)
         {
-            if(_shoot_cooldown > 0)
-            {
-                --_shoot_cooldown;
-            }
 
 
             if(!_sprite.value().visible())
@@ -341,7 +391,10 @@ namespace gm
                 _dead = true;
             }
 
-            _dy += gravity;
+            if(_type != ENEMY_TYPE::GLORP_CRAFT)
+            {
+                _dy += gravity;
+            }
 
             if(_type == ENEMY_TYPE::GOOMBA || _type == ENEMY_TYPE::SLIME || _type == ENEMY_TYPE::GOOMBA_BOSS)
             {
@@ -361,6 +414,69 @@ namespace gm
                     {
                         _dx += _dir*acc;
                     }
+                }
+                else if(_type == ENEMY_TYPE::GOOMBA_BOSS)
+                {
+                    if(_dash_cooldown > 0)
+                    {
+                        --_dash_cooldown;
+                    }
+
+                    bn::fixed diff_x = player_pos.x() - _pos.x();
+                    bn::fixed diff_y = player_pos.y() - _pos.y();
+
+
+                    bool safe_to_move = !_will_fall() && !_will_hit_wall();
+
+                    if(diff_x < 0 && !_sprite.value().horizontal_flip())
+                    {
+                        _sprite.value().set_horizontal_flip(true);
+                        _dir = -1;
+                    }
+                    else if(diff_x > 0 && _sprite.value().horizontal_flip())
+                    {
+                        _sprite.value().set_horizontal_flip(false);
+                        _dir = 1;
+                    }
+
+                    if(!_is_dashing && _dash_cooldown == 0 && bn::abs(diff_x) > 16 && bn::abs(diff_x) < 160 && bn::abs(diff_y) < 20)
+                    {
+                        _is_dashing = true;
+                        _dash_distance_traveled = 0;
+                        _dir = (diff_x < 0) ? -1 : 1;
+
+                        bn::sound_items::pop1.play();
+                    }
+
+                    if(_is_dashing)
+                    {
+                        _dx = _dir * _dash_speed;
+                        _dash_distance_traveled += bn::abs(_dx);
+
+                        if(_dash_distance_traveled >= _max_dash_distance ||
+                           _will_hit_wall() || _will_fall())
+                        {
+                            _is_dashing = false;
+                            _dash_cooldown = 120;
+                            _dx = 0;
+                            _dash_distance_traveled = 0;
+                            BN_LOG("dash ended");
+                        }
+                    }
+                    else
+                    {
+                        if(!_invulnerable && _grounded)
+                        {
+                            _dx += _dir * acc;
+                        }
+
+                        if(_shoot_cooldown == 0)
+                        {
+                            gun.enemy_shoot(_camera,player_pos, _pos , BulletPattern::SPREAD, 1);
+                            _shoot_cooldown = _shoot_circle_delay;
+                        }
+                    }
+                    gun.enemy_update_projectiles(_camera, player_pos,_map,_level,*this,_dead);
                 }
                 else
                 {
@@ -386,16 +502,91 @@ namespace gm
                     {
                         _dx += _dir*acc;
                     } 
+
+                    if(_type == ENEMY_TYPE::GOOMBA && _shoot_cooldown == 0)
+                    {
+                        gun.enemy_shoot(_camera,player_pos, _pos , BulletPattern::DIRECT, 0.8);
+                        _shoot_cooldown = _shoot_circle_delay;
+                    }
+                    gun.enemy_update_projectiles(_camera, player_pos,_map,_level,*this,_dead);
+
+
                 }
             }
-
-            
-            if(_type == ENEMY_TYPE::GOOMBA && _shoot_cooldown == 0)
+            else if(_type == ENEMY_TYPE::GLORP_CRAFT)
             {
-                gun.enemy_shoot(_camera,player_pos, _pos);
-                _shoot_cooldown = _shoot_delay;
+                if(_dash_cooldown > 0)
+                {
+                    --_dash_cooldown;
+                }
+
+                bn::fixed diff_x = player_pos.x() - _pos.x();
+                bn::fixed diff_y = player_pos.y() - _pos.y();
+
+                if(diff_x < 0 && !_sprite.value().horizontal_flip())
+                {
+                    _sprite.value().set_horizontal_flip(true);
+                    _dir = -1;
+                }
+                else if(diff_x > 0 && _sprite.value().horizontal_flip())
+                {
+                    _sprite.value().set_horizontal_flip(false);
+                    _dir = 1;
+                }
+
+                if(!_is_dashing &&
+                _dash_cooldown == 0 &&
+                bn::abs(diff_x) > 16 && bn::abs(diff_x) < 160 &&
+                bn::abs(diff_y) < 40)
+                {
+                    _is_dashing = true;
+                    _dash_distance_traveled = 0;
+                    _dir = (diff_x < 0) ? -1 : 1;
+
+                    bn::sound_items::pop1.play();
+                }
+
+
+                if(_is_dashing)
+                {
+                    _dx = _dir * _dash_speed;
+                    _dash_distance_traveled += bn::abs(_dx);
+
+                    if(_dash_distance_traveled >= _max_dash_distance ||
+                    _will_hit_wall())
+                    {
+                        _is_dashing = false;
+                        _dash_cooldown = 120;
+                        _dx = 0;
+                        _dash_distance_traveled = 0;
+                    }
+
+                    _dy = 0;
+                }
+                else
+                {
+                    
+                    if(!_invulnerable)
+                    {
+                        _dx = diff_x / 100;  
+                    }
+
+                    _dy = diff_y / 100;        // smooth flying 
+
+                    if(_dy > 1)  _dy = 1;
+                    if(_dy < -1) _dy = -1;
+
+                    if(_shoot_cooldown == 0)
+                    {
+                        gun.enemy_shoot(_camera, player_pos, _pos, BulletPattern::CIRCLE, 1);
+                        _shoot_cooldown = _shoot_circle_delay;
+                    }
+                }
+
+                gun.enemy_update_projectiles(_camera, player_pos, _map, _level, *this, _dead);
             }
-            gun.enemy_update_projectiles(_camera, player_pos,_map,_level,*this,_dead);
+
+
 
             _dx = _dx * friction;
 
@@ -423,7 +614,7 @@ namespace gm
                         _grounded = false;
                     }
                 }  
-                else if(_type == ENEMY_TYPE::GOOMBA_BOSS)
+                else if(_type == ENEMY_TYPE::GOOMBA_BOSS || _type == ENEMY_TYPE::GLORP_CRAFT)
                 {
                     if(_check_collisions_map(_pos, directions::down, Hitbox(0,16,8,0), _map, _level, _map_cells))
                     {

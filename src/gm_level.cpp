@@ -17,6 +17,7 @@ namespace gm
         _floor_tiles = {};
         _wall_tiles = {};
         _ceiling_tiles = {};
+        _obsticle_tiles = {};
 
         bn::span<const bn::affine_bg_map_cell> cells = bg.map().cells_ref().value();
 
@@ -25,7 +26,7 @@ namespace gm
             if(cells.at(ind) == 0)
             {
                 ++empty;
-                if(empty > 2)
+                if(empty > 3)
                 {
                     map_state = true;
                 }
@@ -43,6 +44,10 @@ namespace gm
                 {
                     _ceiling_tiles.push_back(cells.at(ind));
                 }
+                else if(empty == 3)
+                {
+                    _obsticle_tiles.push_back(cells.at(ind));
+                }
             }
             ++ind;
         }
@@ -59,5 +64,9 @@ namespace gm
     bn::vector<int,32> Level::ceiling_tiles()
     {
         return _ceiling_tiles;
+    }
+    bn::vector<int,32> Level::obsticle_tiles()
+    {
+        return _obsticle_tiles;
     }
 }

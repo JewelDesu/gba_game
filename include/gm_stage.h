@@ -19,6 +19,7 @@ namespace gm
         private:
         Player* _player;
         Enemy_Gun enemy_bullets;
+        
     };
 }
 

@@ -7,7 +7,8 @@ namespace gm
     {
         GOOMBA,
         SLIME,
-        GOOMBA_BOSS
+        GOOMBA_BOSS,
+        GLORP_CRAFT
     };
 }
 
