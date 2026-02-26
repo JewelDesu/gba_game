@@ -89,7 +89,7 @@ namespace gm
         _map_cells = map.map().cells_ref().value();
         _dir = 1;
         map_cells = map.map().cells_ref().value();
-        if(_type == ENEMY_TYPE::GOOMBA)
+        if(_type == ENEMY_TYPE::GOOMBA || _type == ENEMY_TYPE::GOOMBA_BOSS)
         {
             _sprite = bn::sprite_items::goomba.create_sprite(_pos.x(), _pos.y());
             _sprite.value().set_camera(_camera);
@@ -181,7 +181,7 @@ namespace gm
         //BN_LOG("Enemy pos:", _pos.x().integer(), ",", _pos.y().integer());
         if(!_dead)
         {
-            if(_type == ENEMY_TYPE::GOOMBA || ENEMY_TYPE::GOOMBA_BOSS)
+            if(_type == ENEMY_TYPE::GOOMBA || _type == ENEMY_TYPE::GOOMBA_BOSS)
             {
                 return check_collisions_bb(attack, _pos.x(), _pos.y(), 8, 16);
             } 
@@ -210,7 +210,7 @@ namespace gm
 
     bool Enemy::_will_fall()
     {
-        if(_type == ENEMY_TYPE::GOOMBA || ENEMY_TYPE::GOOMBA_BOSS)
+        if(_type == ENEMY_TYPE::GOOMBA || _type == ENEMY_TYPE::GOOMBA_BOSS)
         {
             if(_dx < 0){ // left
                 if(!_check_collisions_map(_pos, directions::down, Hitbox(-4,16,4,8), _map, _level, _map_cells))
@@ -291,15 +291,6 @@ namespace gm
     {
         return _type;
     }
-
-    void Enemy::_shoot_bullet(enemy_bullet_type bullet_type, const bn::fixed_point& delta_position,
-                                const bn::fixed_point& hero_position, const bn::camera_ptr& camera,
-                                enemy_bullets& enemy_bullets) const
-{
-    gun.enemy_shoot(camera, hero_position, _wizard_position, enemy_bullet_event(bullet_type, delta_position, 1),);
-}
-
-
 
     void Enemy::update_pos_enemy(bn::fixed_point player_pos, Enemy_Gun& gun)
     {

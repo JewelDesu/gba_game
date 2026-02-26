@@ -24,9 +24,9 @@ namespace gm
 
         }
 
-        void Enemy_Gun::enemy_shoot(const bn::camera_ptr& camera, bn::fixed_point& player, bn::fixed_point& enemy, const bn::fixed_point& delta_position)
+        void Enemy_Gun::enemy_shoot(const bn::camera_ptr& camera, bn::fixed_point& player, bn::fixed_point& enemy)
         {
-            enemy_spawn_projectile(camera, player, enemy, delta_position);
+            enemy_spawn_projectile(camera, player, enemy);
             BN_LOG("Enemy_Gun::enemy_shoot called");
         }
 
@@ -70,7 +70,7 @@ namespace gm
             }
         }
 
-        void Enemy_Gun::enemy_spawn_projectile(const bn::camera_ptr& camera, bn::fixed_point& player, bn::fixed_point& enemy, const bn::fixed_point& delta_position)
+        void Enemy_Gun::enemy_spawn_projectile(const bn::camera_ptr& camera, bn::fixed_point& player, bn::fixed_point& enemy)
         {
             BN_LOG("Enemy_Gun::enemy_spawn_projectile");
             BN_LOG("Enemy position: ", enemy.x(), ", ", enemy.y());
