@@ -8,6 +8,8 @@
 #include "bn_keypad.h"
 #include "bn_regular_bg_ptr.h"
 #include "bn_string.h"
+#include "bn_math.h"
+
 
 #include "bn_sprite_items_health.h"
 #include "bn_sprite_items_weapon2.h"
@@ -103,6 +105,10 @@ namespace gm
         bn::core::update();
 
         bn::fixed _y = 0;
+        bn::fixed start_y = _y_pos;
+        bn::fixed start_x = _x_pos + 2;
+        bn::fixed start_amp = 0;
+
 
         for(int i = 1, limit = text.length(); i <= limit; i++)
         {
@@ -118,13 +124,13 @@ namespace gm
                     if(len > 0)
                     {
                         bn::string_view sub_text = text.substr(start, j - start + 1);
-                        small_text_generator.generate(_x_pos, _y_pos, sub_text, text_sprites);
+                        small_text_generator.generate(_x_pos - 4, _y_pos, sub_text, text_sprites);
                     }
                 }
                 if(j == i - 1 && j - start > 0)
                 {
                     bn::string_view sub_text = text.substr(start, j - start + 1);
-                    small_text_generator.generate(_x_pos, _y_pos, sub_text, text_sprites);
+                    small_text_generator.generate(_x_pos - 4, _y_pos, sub_text, text_sprites);
                 }
             }
             char last_char = text.at(i -1);
@@ -141,16 +147,16 @@ namespace gm
                 }
                 bn::core::update();
             }
-            _y = _y_pos + 8;
+            _y = _y_pos + 10;
         }
 
         for(int i = 0, limit = options.size(); i < limit; i++)
         {
-            small_text_generator.generate(_x_pos + 8, _y + 8 * i, options[i], text_sprites);
+            small_text_generator.generate(_x_pos + 8, _y + 10 * i, options[i], text_sprites);
         }
 
         bn::optional<bn::sprite_ptr> cursor = options.size() > 0 ? bn::optional<bn::sprite_ptr>(
-            bn::sprite_items::cursor.create_sprite(bn::fixed_point(_x_pos + 2, _y))): bn::optional<bn::sprite_ptr>();
+            bn::sprite_items::cursor.create_sprite(bn::fixed_point(_x_pos - 2, _y))): bn::optional<bn::sprite_ptr>();
         
         if(cursor)
         {
@@ -162,6 +168,13 @@ namespace gm
 
         while(!bn::keypad::a_pressed() && !bn::keypad::start_pressed())
         {
+            start_amp += 6;
+            if(start_amp >= 360){
+                start_amp = 0;
+            }
+
+            //cursor->set_x(start_x + bn::degrees_lut_sin(start_amp*1)*2);
+
             if(cursor)
             {
                 if(bn::keypad::down_pressed())
@@ -171,7 +184,7 @@ namespace gm
                     {
                         ind = 0;
                     }
-                    cursor->set_position(cursor->x(), _y + ind * 8);
+                    cursor->set_position(cursor->x(), _y + ind * 10);
                 }
                 if(bn::keypad::up_pressed())
                 {
@@ -180,7 +193,7 @@ namespace gm
                     {
                         ind = options.size()-1;
                     }
-                    cursor->set_position(cursor->x(), _y + ind * 8);
+                    cursor->set_position(cursor->x(), _y + ind * 10);
                 }
             }
             bn::core::update();
@@ -193,7 +206,7 @@ namespace gm
 
     void gui::textbox(const bn::string_view& text)
     {
-        textbox(text, bn::vector<bn::string_view,4>(), -115, 35, true);
+        textbox(text, bn::vector<bn::string_view,4>(), -113, 35, true);
     }
 
 

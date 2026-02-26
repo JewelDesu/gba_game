@@ -94,6 +94,7 @@ namespace gm
 
         bn::fixed layer_1 = 0;
         bn::fixed start_y = -30;
+        bn::fixed start_x = -38 + 2;
         bn::fixed start_amp = 0;
 
         int timer = 0;
@@ -115,7 +116,7 @@ namespace gm
 
         for(int i = 0, limit = options.size(); i < limit; i++)
         {
-            _text_generator->generate(-38 + 8, 55 + 8 * i, options[i], labels);
+            _text_generator->generate(-38 + 8, 55 + 10 * i, options[i], labels);
         }
 
         bn::optional<bn::sprite_ptr> cursor = options.size() > 0 ? bn::optional<bn::sprite_ptr>(
@@ -152,6 +153,8 @@ namespace gm
 
             horizontal_hbe.reload_deltas_ref();
 
+            cursor->set_x(start_x + bn::degrees_lut_sin(start_amp*1)*2);
+
             if(cursor)
             {
                 if(bn::keypad::down_pressed())
@@ -161,7 +164,7 @@ namespace gm
                     {
                         menu_ind = 0;
                     }
-                    cursor->set_position(cursor->x(), 55 + menu_ind * 8);
+                    cursor->set_position(cursor->x(), 55 + menu_ind * 10);
                     BN_LOG("down_pressed: ", menu_ind);
                 }
                 if(bn::keypad::up_pressed())
@@ -171,7 +174,7 @@ namespace gm
                     {
                         menu_ind = options.size()-1;
                     }
-                    cursor->set_position(cursor->x(), 55 + menu_ind * 8);
+                    cursor->set_position(cursor->x(), 55 + menu_ind * 10);
                     BN_LOG("up_pressed: ", menu_ind);
                 }
             }

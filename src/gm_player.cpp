@@ -903,7 +903,7 @@ namespace gm
                 options.push_back("Continue");
                 options.push_back("Save Game");
                 options.push_back("Return to title screen");
-                int select = globals::gui->textbox("Game is paused", options, -115, 35, true);
+                int select = globals::gui->textbox("Game is paused", options, -113, 35, true);
                 if (select == 1)
                 {
                     globals::savegame.health = hp();

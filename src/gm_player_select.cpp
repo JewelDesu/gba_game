@@ -105,6 +105,10 @@ namespace gm
         regular_bg.set_camera(camera);
 
         int timer = 0;
+        bn::fixed start_y = 50;
+        bn::fixed start_x = -64;
+        bn::fixed start_amp = 0;
+
 
         gm::gui gui;
         bool gamestart = false;
@@ -134,6 +138,11 @@ namespace gm
         {
             ++timer;
 
+            start_amp += 6;
+            if(start_amp >= 360){
+                start_amp = 0;
+            }
+
             _action_banana.update();
             _action_apple.update();
 
@@ -143,6 +152,8 @@ namespace gm
             }
 
             horizontal_hbe.reload_deltas_ref();
+
+            cursor->set_x(start_x + bn::degrees_lut_sin(start_amp*1)*2);
 
             if(cursor)
             {
@@ -155,8 +166,15 @@ namespace gm
                         menu_ind = 0;
                         menu_var = -1;
                     }
-                    cursor->set_position(64 * menu_var + menu_ind * (-8), cursor->y());
-                    BN_LOG("right_pressed: ", menu_ind);
+                    if(menu_ind == 1)
+                    {
+                        start_x = 29 * menu_var + menu_ind * (-8);
+                        cursor->set_position(start_x, cursor->y());
+                    }
+                    else
+                        start_x = 64 * menu_var + menu_ind * (-8);
+                        cursor->set_position(start_x, cursor->y());
+                    BN_LOG("right_pressed: ", menu_ind, "  ", menu_var);
                     BN_LOG("set_position: ", cursor->x(), "  ",  cursor->y());
                 }
                 if(bn::keypad::left_pressed())
@@ -168,7 +186,14 @@ namespace gm
                         menu_ind = options.size()-1;
                         menu_var = -1;
                     }
-                    cursor->set_position(-64 * menu_var + menu_ind * 8, cursor->y());
+                    if(menu_ind == 1)
+                    {
+                        start_x = -13 * menu_var + menu_ind * (8);
+                        cursor->set_position(start_x, cursor->y());
+                    }
+                    else
+                        start_x = -64 * menu_var + menu_ind * (-8);
+                        cursor->set_position(start_x, cursor->y());
                     BN_LOG("left_pressed: ", menu_ind);
                     BN_LOG("set_position: ", cursor->x(), "  ",  cursor->y());
                 }

@@ -9,6 +9,16 @@ namespace gm
     {
         return a - m * ((a/m).integer());
     }
+
+    [[nodiscard]] constexpr bn::fixed amp (bn::fixed start_amp)
+    {
+        start_amp += 6;
+        if(start_amp >= 360){
+            start_amp = 0;
+        }
+
+        return start_amp;
+    }
 }
 
 #endif
