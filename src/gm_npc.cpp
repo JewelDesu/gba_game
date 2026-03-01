@@ -53,7 +53,7 @@ namespace gm
         if(_sprite.has_value())
         {
             _sprite.value().set_camera(_camera);
-            _sprite.value().set_bg_priority(1);
+            _sprite.value().set_bg_priority(2);
             _sprite.value().set_z_order(2);
         }
     }

@@ -92,7 +92,8 @@ namespace gm
         _player -> set_healthbar_visibility(true);
         //_player -> set_points_visibility(true);
         Gun bullets;
-        
+        globals::savegame.stage_name = Scene::STAGE;
+
 
         while(true)
         {

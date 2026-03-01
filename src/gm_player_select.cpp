@@ -106,7 +106,7 @@ namespace gm
 
         int timer = 0;
         bn::fixed start_y = 50;
-        bn::fixed start_x = -64;
+        bn::fixed start_x = -70;
         bn::fixed start_amp = 0;
 
 
@@ -124,7 +124,11 @@ namespace gm
     
 
         bn::optional<bn::sprite_ptr> cursor = options.size() > 0 ? bn::optional<bn::sprite_ptr>(
-            bn::sprite_items::cursor.create_sprite(bn::fixed_point(-64, 50))): bn::optional<bn::sprite_ptr>();
+            bn::sprite_items::cursor.create_sprite(bn::fixed_point(-70, 50))): bn::optional<bn::sprite_ptr>();
+
+        cursor->set_horizontal_scale(2);
+        cursor->set_vertical_scale(2);
+
             
         if(cursor)
         {
@@ -168,11 +172,11 @@ namespace gm
                     }
                     if(menu_ind == 1)
                     {
-                        start_x = 29 * menu_var + menu_ind * (-8);
+                        start_x = 23 * menu_var + menu_ind * (-8);
                         cursor->set_position(start_x, cursor->y());
                     }
                     else
-                        start_x = 64 * menu_var + menu_ind * (-8);
+                        start_x = 70 * menu_var + menu_ind * (-8);
                         cursor->set_position(start_x, cursor->y());
                     BN_LOG("right_pressed: ", menu_ind, "  ", menu_var);
                     BN_LOG("set_position: ", cursor->x(), "  ",  cursor->y());
@@ -188,11 +192,11 @@ namespace gm
                     }
                     if(menu_ind == 1)
                     {
-                        start_x = -13 * menu_var + menu_ind * (8);
+                        start_x = -7 * menu_var + menu_ind * (8);
                         cursor->set_position(start_x, cursor->y());
                     }
                     else
-                        start_x = -64 * menu_var + menu_ind * (-8);
+                        start_x = -70 * menu_var + menu_ind * (-8);
                         cursor->set_position(start_x, cursor->y());
                     BN_LOG("left_pressed: ", menu_ind);
                     BN_LOG("set_position: ", cursor->x(), "  ",  cursor->y());

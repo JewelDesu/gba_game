@@ -63,8 +63,8 @@ namespace gm
         bn::regular_bg_ptr regular_bg = bn::regular_bg_items::bg.create_bg(0, 0);
         //bn::regular_bg_ptr regular_bg = bn::regular_bg_items::house_bg.create_bg(0, 0);
 
-        bn::fixed_point init_pos1 = bn::fixed_point(-70, 44);
-        bn::fixed_point init_pos2 = bn::fixed_point(70, 44);
+        bn::fixed_point init_pos1 = bn::fixed_point(-75, 44);
+        bn::fixed_point init_pos2 = bn::fixed_point(75, 44);
 
         bn::optional<bn::sprite_ptr> apple_cat = bn::sprite_items::apple_cat.create_sprite(init_pos1.x(), init_pos1.y());
         bn::optional<bn::sprite_ptr> banana_cat = bn::sprite_items::banana_cat.create_sprite(init_pos2.x(), init_pos2.y());

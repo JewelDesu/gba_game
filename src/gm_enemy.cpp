@@ -97,7 +97,7 @@ namespace gm
         {
             _sprite = bn::sprite_items::goomba.create_sprite(_pos.x(), _pos.y());
             _sprite.value().set_camera(_camera);
-            _sprite.value().set_bg_priority(1);
+            _sprite.value().set_bg_priority(2);
             _action = bn::create_sprite_animate_action_forever(
                 _sprite.value(), 6, bn::sprite_items::goomba.tiles_item(), 0,1,0,1);
         }
@@ -105,7 +105,7 @@ namespace gm
         {
             _sprite = bn::sprite_items::slime.create_sprite(_pos.x(), _pos.y());
             _sprite.value().set_camera(_camera);
-            _sprite.value().set_bg_priority(1);
+            _sprite.value().set_bg_priority(2);
             _action = bn::create_sprite_animate_action_forever(
                              _sprite.value(), 20, bn::sprite_items::slime.tiles_item(), 0,1,0,1);
         } 
@@ -113,7 +113,7 @@ namespace gm
         {
             _sprite = bn::sprite_items::glorp_craft.create_sprite(_pos.x(), _pos.y());
             _sprite.value().set_camera(_camera);
-            _sprite.value().set_bg_priority(1);
+            _sprite.value().set_bg_priority(2);
             _action = bn::create_sprite_animate_action_forever(
                              _sprite.value(), 20, bn::sprite_items::glorp_craft.tiles_item(), 0,0);
         } 
