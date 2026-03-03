@@ -13,8 +13,12 @@
 #include "bn_random.h"
 
 #include "gm_scene.h"
+#include "gm_globals.h"
+
 
 #include "bn_sprite_items_banana.h"
+#include "bn_sprite_items_apple.h"
+
 #include "bn_regular_bg_items_grasslands_loading.h"
 
 
@@ -26,11 +30,19 @@ namespace gm
         
         
         bn::sprite_ptr banana1 = bn::sprite_items::banana.create_sprite(init_pos.x(), init_pos.y()+35);
+        bn::sprite_ptr apple1 = bn::sprite_items::apple.create_sprite(-20, init_pos.y()+40);
+
         banana1.set_horizontal_scale(2);
         banana1.set_vertical_scale(2);
+
+        apple1.set_horizontal_scale(2);
+        apple1.set_vertical_scale(2);
         
         bn::sprite_animate_action<6> action1 = bn::create_sprite_animate_action_forever(
                         banana1, 3, bn::sprite_items::banana.tiles_item(), 8,9,4,5,6,7);
+        
+        bn::sprite_animate_action<6> action2 = bn::create_sprite_animate_action_forever(
+                        apple1, 3, bn::sprite_items::apple.tiles_item(), 8,9,4,5,6,7);
 
 
 
@@ -43,15 +55,18 @@ namespace gm
 
         
         banana1.set_camera(camera);
+        apple1.set_camera(camera);
 
         map.set_camera(camera);
         //_player -> set_points_visibility(false);
 
-        for(int i = 0; i < 160; ++i)
+        for(int i = 0; i < 220; ++i)
         {
             banana1.set_x(banana1.x() + 1.5);
+            apple1.set_x(apple1.x() + 1.2);
 
             action1.update();
+            action2.update();
             bn::core::update();
         }
     }

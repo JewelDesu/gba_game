@@ -17,8 +17,7 @@
 #include "gm_npc_type.h"
 
 #include "bn_affine_bg_items_thirdstage.h"
-#include "bn_regular_bg_items_grasslands.h"
-#include "bn_regular_bg_items_cloud_cover_1.h"
+#include "bn_regular_bg_items_third_bg.h"
 #include "bn_music_items.h"
 #include "bn_music_actions.h"
 #include "bn_sound_items.h"
@@ -42,12 +41,13 @@ namespace gm
         bn::sprite_text_generator text_generator(small_sprite_font);
 
         bn::affine_bg_ptr map = bn::affine_bg_items::thirdstage.create_bg(512, 512); 
-        //bn::regular_bg_ptr map_bg = bn::regular_bg_items::grasslands.create_bg(512, 512);
+        //bn::regular_bg_ptr map_bg = bn::regular_bg_items::third_bg.create_bg(512, 512);
         //map_bg.set_priority(3);
         map.set_priority(2);
         gm::Level level = gm::Level(map);
 
         map.set_camera(camera);
+       // map_bg.set_camera(camera);
 
         bn::unique_ptr<bn::vector<Enemy, 16>> enemies(new bn::vector<Enemy, 16>());
         enemies->push_back(Enemy(camera, map, 447, 519, ENEMY_TYPE::GLORP_CRAFT, 25));

@@ -26,7 +26,7 @@
 #include "bn_sprite_items_banana.h"
 #include "bn_sprite_items_apple.h"
 #include "bn_sprite_items_explosion.h"
-#include "bn_affine_bg_items_bgg.h"
+#include "bn_affine_bg_items_stage.h"
 #include "bn_regular_bg_items_dialogbox.h"
 #include "bn_sound_items.h"
 
@@ -101,7 +101,7 @@ namespace gm
     _sprite(sprite),
     _type(type),
     _camera(bn::camera_ptr::create(0,0)),
-    _map(bn::affine_bg_items::bgg.create_bg(0, 0)),
+    _map(bn::affine_bg_items::stage.create_bg(0, 0)),
     _healthbar(gm::Healthbar()),
     _dialogbox(bn::regular_bg_items::dialogbox.create_bg(0,0))
     {
@@ -110,9 +110,9 @@ namespace gm
         _sprite.set_visible(false);
         _healthbar.set_visible(false);
         _facing_left = false;
+        _dialogbox.set_visible(false);
         _dialogbox.set_priority(1);
         _dialogbox.put_above();
-        _dialogbox.set_visible(false);
     }
 
     int Player::hp()
