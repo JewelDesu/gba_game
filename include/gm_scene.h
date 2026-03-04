@@ -5,6 +5,7 @@ namespace gm
 {
     enum class Scene
     {
+        INTRO,
         TITLE,
         MENU,
         STAGE,

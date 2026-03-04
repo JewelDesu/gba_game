@@ -29,6 +29,7 @@
 #include "gm_player_select.h"
 #include "gm_loading.h"
 #include "gm_player_type.h"
+#include "gm_intro.h"
 
 #include "gm_small_sprite_font.h"
 #include "bn_sprite_items_banana.h"
@@ -38,7 +39,7 @@
 int main()
 {
     bn::core::init();
-    gm::Scene scene = gm::Scene::TITLE; 
+    gm::Scene scene = gm::Scene::INTRO; 
     gm::PLAYER_TYPE player_type = gm::PLAYER_TYPE::BANANA_CAT;  
 
     bn::sprite_text_generator small_text_generator(gm::small_sprite_font);
@@ -57,7 +58,12 @@ int main()
    
     while(true)
     {
-        if(scene == gm::Scene::TITLE)
+        if(scene == gm::Scene::INTRO)
+        {
+            gm::Intro intro = gm::Intro();
+            scene = intro.execute();
+        }
+        else if(scene == gm::Scene::TITLE)
         {
             gm::Title title = gm::Title(small_text_generator);
             scene = title.execute();
@@ -97,7 +103,7 @@ int main()
         }
         player.delete_data();
         player.hide();
-        if(scene != gm::Scene::DEATH && scene != gm::Scene::TITLE)
+        if(scene != gm::Scene::DEATH && scene != gm::Scene::TITLE && scene != gm::Scene::INTRO)
         {
             gm::Loading loading = gm::Loading();
             loading.execute(scene);

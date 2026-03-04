@@ -17,10 +17,8 @@
 #include "bn_regular_bg_position_hbe_ptr.h"
 #include "bn_affine_bg_attributes_hbe_ptr.h"
 #include "bn_sram.h"
-#include "bn_vector.h"
 #include "bn_audio.h"
 #include "bn_optional.h"
-
 #include "gm_scene.h"
 #include "gm_savegame.h"
 #include "gm_player_stats.h"
