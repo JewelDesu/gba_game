@@ -22,8 +22,6 @@ namespace gm
         private:
             bn::sprite_text_generator* _text_generator;
             bn::vector<bn::sprite_ptr, 16> labels;
-            bn::optional<bn::blending_fade_alpha_to_action> _fade_action;
-            void fade_out();
     };
 }
 

@@ -1,8 +1,11 @@
 #ifndef GM_INTRO_H
 #define GM_INTRO_H
 
-#include "bn_blending_actions.h"
+
 #include "bn_optional.h"
+#include "bn_blending_actions.h"
+#include "bn_bg_palettes_actions.h"
+#include "bn_sprite_palettes_actions.h"
 
 #include "gm_scene.h"
 
@@ -15,6 +18,7 @@ namespace gm
             Scene execute();
 
         private:    
+
 
     };
 }

@@ -23,6 +23,8 @@
 #include "gm_savegame.h"
 #include "gm_player_stats.h"
 #include "gm_globals.h"
+#include "bn_blending_actions.h"
+
 
 #include "bn_regular_bg_items_bg.h"
 #include "bn_sprite_items_apple_cat.h"
@@ -76,8 +78,11 @@ namespace gm
         //_text_generator->set_left_alignment();
         //_text_generator->generate(-38, 55, "PRESS START", labels);
 
-
-
+        regular_bg.set_blending_enabled(true);
+        apple_cat -> set_blending_enabled(true);
+        banana_cat -> set_blending_enabled(true);
+        title1 -> set_blending_enabled(true);
+        title2 -> set_blending_enabled(true);
 
         bn::camera_ptr camera = bn::camera_ptr::create(0,0);
 
@@ -126,8 +131,18 @@ namespace gm
 
         int menu_ind = 0;
 
+        bn::blending::set_fade_alpha(1);
+
+
+        bn::blending_fade_alpha_to_action fade_action(90, 0);
+
         while(!(gamestart && timer > 60))
         {
+            if(!fade_action.done())
+            {
+                fade_action.update();
+            }
+            
             ++timer;
             layer_1 = loop(layer_1, 0.5);
 
